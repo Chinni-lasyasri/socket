@@ -5,6 +5,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<meta name="theme-color" content="#000000">
+
+<link rel="manifest" href="/manifest.json">
+
 <link rel="stylesheet" href="styles.css">
 
 <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
@@ -136,6 +140,12 @@ socket.on("message",(data)=>{
   addMessage(data);
 });
 
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/sw.js");
+}
 </script>
 
 </body>
