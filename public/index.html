@@ -148,5 +148,55 @@ if ("serviceWorker" in navigator) {
 }
 </script>
 
+<div id="installBanner">
+  <div class="install-content">
+    <div class="install-text">
+      <strong>Socket Chat</strong>
+      <p>Install app for faster messaging</p>
+    </div>
+
+    <div class="install-actions">
+      <button id="installAppBtn">Install</button>
+      <button id="closeBanner">✕</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let deferredPrompt;
+const banner = document.getElementById("installBanner");
+const installBtn = document.getElementById("installAppBtn");
+const closeBtn = document.getElementById("closeBanner");
+
+// Hide if already installed
+if (window.matchMedia('(display-mode: standalone)').matches) {
+  banner.style.display = "none";
+}
+
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  banner.style.display = "block";
+});
+
+installBtn.addEventListener("click", async () => {
+  if (!deferredPrompt) return;
+
+  deferredPrompt.prompt();
+  await deferredPrompt.userChoice;
+
+  banner.style.display = "none";
+  deferredPrompt = null;
+});
+
+closeBtn.addEventListener("click", () => {
+  banner.style.display = "none";
+});
+
+window.addEventListener("appinstalled", () => {
+  banner.style.display = "none";
+});
+</script>
+
 </body>
 </html>

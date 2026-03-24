@@ -132,3 +132,53 @@ button:hover{
   color:white;
   align-self:flex-end;
 }
+
+/* app install */
+
+#installBanner{
+  position:fixed;
+  bottom:15px;
+  left:50%;
+  transform:translateX(-50%);
+  width:90%;
+  max-width:500px;
+  background:white;
+  border-radius:12px;
+  box-shadow:0 6px 20px rgba(0,0,0,0.15);
+  padding:12px 15px;
+  display:none;
+  z-index:999;
+}
+
+.install-content{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.install-text p{
+  margin:2px 0 0;
+  font-size:13px;
+  color:#666;
+}
+
+.install-actions{
+  display:flex;
+  gap:8px;
+}
+
+#installAppBtn{
+  background:#000;
+  color:white;
+  border:none;
+  padding:7px 14px;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+#closeBanner{
+  background:transparent;
+  border:none;
+  font-size:16px;
+  cursor:pointer;
+}
