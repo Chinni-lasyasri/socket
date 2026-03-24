@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ChatGateway } from './test/test.gateway';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
@@ -11,7 +9,6 @@ import { join } from 'path';
       rootPath: join(__dirname, '..', 'src/public'),
     }),
   ],
-  controllers: [AppController],
-  providers: [AppService, ChatGateway],
+  providers: [ChatGateway],
 })
 export class AppModule {}
