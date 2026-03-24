@@ -34,7 +34,8 @@ export class ChatGateway implements OnGatewayConnection {
   @WebSocketServer()
   server: Server;
 
-  allowedUsers = ['111', '222', '333', '444', '555'];
+  // allowedUsers = ['111', '222', '333', '444', '555'];
+  allowedUsers = ['1001', '2002', '3003'];
 
   roomMessages: Record<string, ChatMessage[]> = {};
 

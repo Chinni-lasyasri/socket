@@ -5,134 +5,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<link rel="stylesheet" href="styles.css">
+
 <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-
-<style>
-
-*{
-  box-sizing:border-box;
-}
-
-body{
-  font-family: Arial;
-  background:#f4f6f9;
-  height:100dvh;
-  margin:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-/* LOGIN PAGE */
-
-#loginPage{
-  background:white;
-  padding:30px;
-  border-radius:12px;
-  width:90%;
-  max-width:320px;
-  box-shadow:0 4px 15px rgba(0,0,0,0.1);
-}
-
-#loginPage h2{
-  text-align:center;
-  margin-bottom:20px;
-}
-
-/* INPUTS */
-
-input{
-  width:100%;
-  padding:12px;
-  margin-bottom:15px;
-  border:1px solid #ccc;
-  border-radius:6px;
-  font-size:16px;
-}
-
-/* BUTTON */
-
-button{
-  width:100%;
-  padding:12px;
-  background:#7fbf7f;
-  color:white;
-  border:none;
-  border-radius:6px;
-  cursor:pointer;
-  font-size:16px;
-}
-
-button:hover{
-  background:#6fb36f;
-}
-
-/* CHAT PAGE */
-
-#chatPage{
-  display:none;
-  width:100%;
-  max-width:500px;
-  height:95dvh;
-  flex-direction:column;
-}
-
-/* MESSAGES */
-
-#messages{
-  background:white;
-  flex:1;
-  border-radius:10px;
-  padding:15px;
-  overflow-y:auto;
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-  margin-bottom:10px;
-  box-shadow:0 2px 10px rgba(0,0,0,0.08);
-}
-
-/* CHAT INPUT AREA */
-
-#chatForm{
-  display:flex;
-  gap:8px;
-}
-
-#messageInput{
-  flex:1;
-  margin-bottom:0;
-}
-
-/* SEND BUTTON */
-
-#chatForm button{
-  width:100px;
-  background:black;
-}
-
-/* MESSAGE BUBBLES */
-
-.msg{
-  padding:10px 14px;
-  border-radius:10px;
-  max-width:70%;
-  word-wrap:break-word;
-  font-size:15px;
-}
-
-.left{
-  background:#eee;
-  align-self:flex-start;
-}
-
-.right{
-  background:#7fbf7f;
-  color:white;
-  align-self:flex-end;
-}
-
-</style>
 
 </head>
 
@@ -151,7 +26,9 @@ button:hover{
 
 <div id="chatPage">
 
-<div id="messages"></div>
+<div id="messages">
+  <div id="roomHeader">Room 1</div>
+</div>
 
 <form id="chatForm">
 <input id="messageInput" placeholder="Message..." required/>
@@ -162,11 +39,9 @@ button:hover{
 
 <script>
 
-// const socket = io("http://192.168.168.245:3000");
 const socket = io("https://socket-ojt5.onrender.com", {
   transports: ["websocket"]
 });
-// const socket = io("http://localhost:3000");
 
 const loginPage = document.getElementById("loginPage");
 const chatPage = document.getElementById("chatPage");
@@ -181,8 +56,24 @@ const messages = document.getElementById("messages");
 
 let username = "";
 
+// function addMessage(data){
+//   const div=document.createElement("div");
+//   div.classList.add("msg");
+
+//   if(data.username === username){
+//     div.classList.add("right");
+//   }else{
+//     div.classList.add("left");
+//   }
+
+//   div.innerHTML=`${data.message}`;
+//   messages.appendChild(div);
+
+//   messages.scrollTop = messages.scrollHeight;
+// }
+
 function addMessage(data){
-  const div=document.createElement("div");
+  const div = document.createElement("div");
   div.classList.add("msg");
 
   if(data.username === username){
@@ -191,7 +82,8 @@ function addMessage(data){
     div.classList.add("left");
   }
 
-  div.innerHTML=`${data.message}`;
+  div.innerHTML = `${data.message}`;
+
   messages.appendChild(div);
 
   messages.scrollTop = messages.scrollHeight;
@@ -202,7 +94,7 @@ loginForm.addEventListener("submit",(e)=>{
 
   username = usernameInput.value;
 
-  const allowedUsers = ["111","222","333","444","555"];
+  const allowedUsers = ["1001","2002", "3003"];
 
   if(!allowedUsers.includes(username)){
     alert("User does not exist");
@@ -232,7 +124,7 @@ chatForm.addEventListener("submit",(e)=>{
   if(!message) return;
 
   socket.emit("room-message",{
-    room:"room1",
+    room:"Personal Chat",
     username:username,
     message:message
   });
