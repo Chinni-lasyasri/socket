@@ -43,6 +43,8 @@
 
 <script>
 
+  const ROOM_NAME = "Personal Chat";
+
 const socket = io("https://chinni-test-chat.onrender.com", {
   transports: ["websocket"]
 });
@@ -111,7 +113,7 @@ loginForm.addEventListener("submit",(e)=>{
 
 
   socket.emit("join-room",{
-    room:"room1",
+    room:ROOM_NAME,
     username:username
   });
 
@@ -128,7 +130,7 @@ chatForm.addEventListener("submit",(e)=>{
   if(!message) return;
 
   socket.emit("room-message",{
-    room:"Personal Chat",
+    room:ROOM_NAME,
     username:username,
     message:message
   });
