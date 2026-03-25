@@ -31,7 +31,7 @@
 <div id="chatPage">
 
 <div id="messages">
-  <div id="roomHeader">Room 1</div>
+  <div id="roomHeader">Personal Chat</div>
 </div>
 
 <form id="chatForm">
@@ -43,7 +43,7 @@
 
 <script>
 
-  const ROOM_NAME = "Personal Chat";
+const ROOM_NAME = "Personal Chat";
 
 const socket = io("https://chinni-test-chat.onrender.com", {
   transports: ["websocket"]
@@ -61,22 +61,6 @@ const messageInput = document.getElementById("messageInput");
 const messages = document.getElementById("messages");
 
 let username = "";
-
-// function addMessage(data){
-//   const div=document.createElement("div");
-//   div.classList.add("msg");
-
-//   if(data.username === username){
-//     div.classList.add("right");
-//   }else{
-//     div.classList.add("left");
-//   }
-
-//   div.innerHTML=`${data.message}`;
-//   messages.appendChild(div);
-
-//   messages.scrollTop = messages.scrollHeight;
-// }
 
 function addMessage(data){
   const div = document.createElement("div");
@@ -109,12 +93,13 @@ loginForm.addEventListener("submit",(e)=>{
 
   loginPage.style.display="none";
   chatPage.style.display="flex";
-  messages.innerHTML = "";
 
+  // Keep header after login
+  messages.innerHTML = `<div id="roomHeader">${ROOM_NAME}</div>`;
 
   socket.emit("join-room",{
-    room:ROOM_NAME,
-    username:username
+    room: ROOM_NAME,
+    username: username
   });
 
 });
@@ -130,9 +115,9 @@ chatForm.addEventListener("submit",(e)=>{
   if(!message) return;
 
   socket.emit("room-message",{
-    room:ROOM_NAME,
-    username:username,
-    message:message
+    room: ROOM_NAME,
+    username: username,
+    message: message
   });
 
   messageInput.value="";
@@ -150,12 +135,11 @@ if ("serviceWorker" in navigator) {
 }
 </script>
 
+<!-- Install Banner -->
 <div id="installBanner">
   <div class="install-content">
     <div class="install-text">
-      <!-- <strong>Socket Chat</strong> -->
       <strong>Install app for faster messaging</strong>
-      <!-- <p>Install app for faster messaging</p> -->
     </div>
 
     <div class="install-actions">
@@ -171,16 +155,28 @@ const banner = document.getElementById("installBanner");
 const installBtn = document.getElementById("installAppBtn");
 const closeBtn = document.getElementById("closeBanner");
 
-// Hide if already installed
+const isIOS = /iphone|ipad|ipod/i.test(window.navigator.userAgent);
+
+// If already installed
 if (window.matchMedia('(display-mode: standalone)').matches) {
   banner.style.display = "none";
 }
 
-window.addEventListener("beforeinstallprompt", (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
+// iPhone behavior
+if (isIOS) {
   banner.style.display = "block";
-});
+  installBtn.style.display = "none";
+  document.querySelector(".install-text strong").innerText =
+    "Tap Share → Add to Home Screen";
+} 
+// Android / Desktop
+else {
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    banner.style.display = "block";
+  });
+}
 
 installBtn.addEventListener("click", async () => {
   if (!deferredPrompt) return;
