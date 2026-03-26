@@ -126,6 +126,17 @@
 
     });
 
+    socket.on("room-users", (users) => {
+  const status = document.querySelector(".status");
+
+  if (users.length > 1) {
+    status.textContent = "Online";
+  } else {
+    status.textContent = "Offline";
+  }
+});
+    
+
     socket.on("previous-messages", (msgs) => {
 
       // Merge messages instead of replacing
