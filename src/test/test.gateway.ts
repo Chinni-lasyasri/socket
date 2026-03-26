@@ -3,6 +3,7 @@ import {
   WebSocketServer,
   SubscribeMessage,
   OnGatewayConnection,
+  OnGatewayDisconnect,
 } from '@nestjs/websockets';
 
 import { Server, Socket } from 'socket.io';
@@ -30,7 +31,7 @@ interface ChatMessage {
     origin: '*',
   },
 })
-export class ChatGateway implements OnGatewayConnection {
+export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
@@ -38,11 +39,40 @@ export class ChatGateway implements OnGatewayConnection {
   // allowedUsers = ['test', 'test1', 'test2', 'test3', 'test4'];
 
   roomMessages: Record<string, ChatMessage[]> = {};
+  roomUsers: Record<string, Set<string>> = {};
 
   handleConnection(client: Socket) {
     console.log('Client connected:', client.id);
   }
 
+  // @SubscribeMessage('join-room')
+  // async joinRoom(client: Socket, data: JoinRoomPayload) {
+  //   const { room, username } = data;
+
+  //   if (!this.allowedUsers.includes(username)) {
+  //     client.emit('login-error', 'User does not exist');
+  //     client.disconnect();
+  //     return;
+  //   }
+
+  //   await client.join(room);
+
+  //   console.log(username, 'joined', room);
+
+  //   const allMessages = this.roomMessages[room] || [];
+
+  //   // Send last 50 messages for chat history
+  //   const recentMessages = allMessages.slice(-50);
+
+  //   client.emit('previous-messages', recentMessages);
+
+  //   // Mark undelivered messages as delivered
+  //   recentMessages.forEach((msg) => {
+  //     if (!msg.deliveredTo.includes(username)) {
+  //       msg.deliveredTo.push(username);
+  //     }
+  //   });
+  // }
   @SubscribeMessage('join-room')
   async joinRoom(client: Socket, data: JoinRoomPayload) {
     const { room, username } = data;
@@ -55,21 +85,31 @@ export class ChatGateway implements OnGatewayConnection {
 
     await client.join(room);
 
+    if (!this.roomUsers[room]) {
+      this.roomUsers[room] = new Set();
+    }
+
+    this.roomUsers[room].add(username);
+
     console.log(username, 'joined', room);
+
+    // send status update
+    this.server.to(room).emit('room-users', Array.from(this.roomUsers[room]));
 
     const allMessages = this.roomMessages[room] || [];
 
-    // Send last 50 messages for chat history
-    const recentMessages = allMessages.slice(-50);
+    client.emit('previous-messages', allMessages);
+  }
+  handleDisconnect(client: Socket) {
+    for (const room in this.roomUsers) {
+      this.roomUsers[room].forEach((user) => {
+        if (client.rooms.has(room)) {
+          this.roomUsers[room].delete(user);
+        }
+      });
 
-    client.emit('previous-messages', recentMessages);
-
-    // Mark undelivered messages as delivered
-    recentMessages.forEach((msg) => {
-      if (!msg.deliveredTo.includes(username)) {
-        msg.deliveredTo.push(username);
-      }
-    });
+      this.server.to(room).emit('room-users', Array.from(this.roomUsers[room]));
+    }
   }
 
   @SubscribeMessage('room-message')
