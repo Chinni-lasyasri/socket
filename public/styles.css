@@ -1,184 +1,134 @@
-*{
-  box-sizing:border-box;
-}
-
 body{
-  font-family: Arial;
-  background:#f4f6f9;
-  height:100dvh;
+  font-family: Arial, sans-serif;
   margin:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  background:#e5ddd5;
+  height:100dvh;
 }
 
 /* LOGIN PAGE */
 
 #loginPage{
+  height:100dvh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+#loginPage form{
   background:white;
   padding:30px;
-  border-radius:12px;
-  width:90%;
-  max-width:320px;
+  border-radius:10px;
+  width:280px;
   box-shadow:0 4px 15px rgba(0,0,0,0.1);
 }
 
-#loginPage h2{
-  text-align:center;
-  margin-bottom:20px;
-}
-
-/* INPUTS */
-
-input{
+#loginPage input{
   width:100%;
-  padding:12px;
+  padding:10px;
   margin-bottom:15px;
-  border:1px solid #ccc;
-  border-radius:6px;
-  font-size:16px;
 }
 
-/* BUTTON */
-
-button{
+#loginPage button{
   width:100%;
-  padding:12px;
-  background:#7fbf7f;
-  color:white;
+  padding:10px;
+  background:#25d366;
   border:none;
-  border-radius:6px;
-  cursor:pointer;
-  font-size:16px;
-}
-
-button:hover{
-  background:#6fb36f;
+  color:white;
+  font-weight:bold;
 }
 
 /* CHAT PAGE */
 
 #chatPage{
   display:none;
-  width:100%;
-  max-width:500px;
-  height:95dvh;
+  height:100dvh;
+}
+
+#chatContainer{
+  display:flex;
+  flex-direction:column;
+  height:100%;
+}
+
+/* HEADER */
+
+#chatHeader{
+  background:#075e54;
+  color:white;
+  padding:12px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.avatar{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  background:white;
+}
+
+.chat-info{
+  display:flex;
   flex-direction:column;
 }
 
-#roomHeader{
-  font-weight:600;
-  font-size:16px;
-  text-align:center;
-  padding-bottom:10px;
-  margin-bottom:10px;
-  border-bottom:1px solid #eee;
-  position:sticky;
-  top:0;
-  background:white;
+.status{
+  font-size:12px;
+  opacity:0.8;
 }
 
 /* MESSAGES */
 
 #messages{
-  background:white;
   flex:1;
-  border-radius:10px;
-  padding:15px;
   overflow-y:auto;
+  padding:15px;
   display:flex;
   flex-direction:column;
-  gap:8px;
-  margin-bottom:10px;
-  box-shadow:0 2px 10px rgba(0,0,0,0.08);
-}
-
-/* CHAT INPUT AREA */
-
-#chatForm{
-  display:flex;
-  gap:8px;
-}
-
-#messageInput{
-  flex:1;
-  margin-bottom:0;
-}
-
-/* SEND BUTTON */
-
-#chatForm button{
-  width:100px;
-  background:black;
+  gap:10px;
 }
 
 /* MESSAGE BUBBLES */
 
 .msg{
-  padding:10px 14px;
+  padding:8px 12px;
   border-radius:10px;
   max-width:70%;
-  word-wrap:break-word;
-  font-size:15px;
+  font-size:14px;
 }
 
 .left{
-  background:#eee;
+  background:white;
   align-self:flex-start;
 }
 
 .right{
-  background:#7fbf7f;
-  color:white;
+  background:#dcf8c6;
   align-self:flex-end;
 }
 
-/* app install */
+/* INPUT AREA */
 
-#installBanner{
-  position:fixed;
-  bottom:15px;
-  left:50%;
-  transform:translateX(-50%);
-  width:90%;
-  max-width:500px;
+#chatForm{
+  display:flex;
+  padding:10px;
   background:white;
-  border-radius:12px;
-  box-shadow:0 6px 20px rgba(0,0,0,0.15);
-  padding:12px 15px;
-  display:none;
-  z-index:999;
+  gap:10px;
+  border-top:1px solid #ddd;
 }
 
-.install-content{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+#messageInput{
+  flex:1;
+  padding:10px;
+  border-radius:20px;
+  border:1px solid #ccc;
 }
 
-.install-text p{
-  margin:2px 0 0;
-  font-size:13px;
-  color:#666;
-}
-
-.install-actions{
-  display:flex;
-  gap:8px;
-}
-
-#installAppBtn{
-  background:#000;
+#chatForm button{
+  background:#25d366;
+  border:none;
   color:white;
-  border:none;
-  padding:7px 14px;
-  border-radius:6px;
-  cursor:pointer;
-}
-
-#closeBanner{
-  background:transparent;
-  border:none;
-  font-size:16px;
-  cursor:pointer;
+  padding:10px 16px;
+  border-radius:20px;
 }

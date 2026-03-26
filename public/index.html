@@ -28,7 +28,7 @@
 
 </div>
 
-<div id="chatPage">
+<!-- <div id="chatPage">
 
 <div id="messages">
   <div id="roomHeader">Personal Chat</div>
@@ -39,14 +39,40 @@
 <button type="submit">Send</button>
 </form>
 
+</div> -->
+
+<div id="chatPage">
+
+<div id="chatContainer">
+
+<div id="chatHeader">
+  <div class="avatar"></div>
+  <div class="chat-info">
+    <div id="roomHeader">Personal Chat</div>
+    <span class="status">Online</span>
+  </div>
+</div>
+
+<div id="messages"></div>
+
+<form id="chatForm">
+<input id="messageInput" placeholder="Type a message..." required/>
+<button type="submit">Send</button>
+</form>
+
+</div>
+
 </div>
 
 <script>
 
+let sessionMessages = [];
+
 const ROOM_NAME = "Personal Chat";
 
 const socket = io("https://chinni-test-chat.onrender.com", {
-  transports: ["websocket"]
+  transports: ["websocket"],
+  reconnection: true
 });
 
 const loginPage = document.getElementById("loginPage");
@@ -62,7 +88,24 @@ const messages = document.getElementById("messages");
 
 let username = "";
 
-function addMessage(data){
+// function addMessage(data){
+//   const div = document.createElement("div");
+//   div.classList.add("msg");
+
+//   if(data.username === username){
+//     div.classList.add("right");
+//   }else{
+//     div.classList.add("left");
+//   }
+
+//   div.innerHTML = `${data.message}`;
+
+//   messages.appendChild(div);
+
+//   messages.scrollTop = messages.scrollHeight;
+// }
+
+function addMessage(data, save = true){
   const div = document.createElement("div");
   div.classList.add("msg");
 
@@ -77,6 +120,10 @@ function addMessage(data){
   messages.appendChild(div);
 
   messages.scrollTop = messages.scrollHeight;
+
+  if(save){
+    sessionMessages.push(data);
+  }
 }
 
 loginForm.addEventListener("submit",(e)=>{
@@ -95,7 +142,11 @@ loginForm.addEventListener("submit",(e)=>{
   chatPage.style.display="flex";
 
   // Keep header after login
-  messages.innerHTML = `<div id="roomHeader">${ROOM_NAME}</div>`;
+  // messages.innerHTML = `<div id="roomHeader">${ROOM_NAME}</div>`;
+  // messages.innerHTML = "";
+  sessionMessages = [];
+  messages.innerHTML = "";
+  
 
   socket.emit("join-room",{
     room: ROOM_NAME,
@@ -104,8 +155,24 @@ loginForm.addEventListener("submit",(e)=>{
 
 });
 
+// socket.on("previous-messages",(msgs)=>{
+//   msgs.forEach(addMessage);
+// });
+
 socket.on("previous-messages",(msgs)=>{
-  msgs.forEach(addMessage);
+
+  // Merge messages instead of replacing
+  msgs.forEach(msg => {
+    const exists = sessionMessages.find(
+      m => m.message === msg.message && m.username === msg.username
+    );
+
+    if(!exists){
+      // addMessage(msg);
+      addMessage(msg, true);
+    }
+  });
+
 });
 
 chatForm.addEventListener("submit",(e)=>{
@@ -123,8 +190,23 @@ chatForm.addEventListener("submit",(e)=>{
   messageInput.value="";
 });
 
+// socket.on("message",(data)=>{
+//   addMessage(data);
+// });
+
 socket.on("message",(data)=>{
   addMessage(data);
+});
+
+socket.on("reconnect", () => {
+  console.log("Reconnected to server");
+
+  if(username){
+    socket.emit("join-room",{
+      room: ROOM_NAME,
+      username: username
+    });
+  }
 });
 
 </script>

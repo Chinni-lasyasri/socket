@@ -57,18 +57,32 @@ export class ChatGateway implements OnGatewayConnection {
 
     console.log(username, 'joined', room);
 
+    // const allMessages = this.roomMessages[room] || [];
+
+    // // send only messages not yet delivered to this user
+    // const pendingMessages = allMessages.filter(
+    //   (msg) => !msg.deliveredTo.includes(username),
+    // );
+
+    // client.emit('previous-messages', pendingMessages);
+
+    // // mark them as delivered
+    // pendingMessages.forEach((msg) => {
+    //   msg.deliveredTo.push(username);
+    // });
+
     const allMessages = this.roomMessages[room] || [];
 
-    // send only messages not yet delivered to this user
-    const pendingMessages = allMessages.filter(
-      (msg) => !msg.deliveredTo.includes(username),
-    );
+    // Send last 50 messages for chat history
+    const recentMessages = allMessages.slice(-50);
 
-    client.emit('previous-messages', pendingMessages);
+    client.emit('previous-messages', recentMessages);
 
-    // mark them as delivered
-    pendingMessages.forEach((msg) => {
-      msg.deliveredTo.push(username);
+    // Mark undelivered messages as delivered
+    recentMessages.forEach((msg) => {
+      if (!msg.deliveredTo.includes(username)) {
+        msg.deliveredTo.push(username);
+      }
     });
   }
 
