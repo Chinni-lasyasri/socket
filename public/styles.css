@@ -8,9 +8,10 @@ html, body {
 body{
   font-family: Arial, sans-serif;
   margin:0;
-  background:#e5ddd5;
+  background:#121212;
   height:100dvh;
   overflow:hidden;
+  color:white;
 }
 
 *{
@@ -24,15 +25,15 @@ body{
   display:flex;
   align-items:center;
   justify-content:center;
-  background:linear-gradient(135deg,#075e54,#128c7e);
+  background:linear-gradient(135deg,#000000,#2b2b2b);
 }
 
 #loginForm{
-  background:white;
+  background:#1e1e1e;
   padding:35px;
   border-radius:14px;
   width:300px;
-  box-shadow:0 15px 35px rgba(0,0,0,0.25);
+  box-shadow:0 15px 35px rgba(0,0,0,0.6);
   text-align:center;
 }
 
@@ -45,14 +46,16 @@ body{
   padding:12px;
   margin-bottom:18px;
   border-radius:8px;
-  border:1px solid #ddd;
+  border:1px solid #444;
   font-size:14px;
+  background:#2a2a2a;
+  color:white;
 }
 
 #loginForm button{
   width:100%;
   padding:12px;
-  background:#25d366;
+  background:#000000;
   border:none;
   color:white;
   font-weight:bold;
@@ -62,7 +65,7 @@ body{
 }
 
 #loginForm button:hover{
-  background:#1ebe5d;
+  background:#333333;
 }
 
 /* CHAT PAGE */
@@ -78,25 +81,26 @@ body{
   flex-direction:column;
   height:100%;
   width:100%;
-  background:#efeae2;
+  background:#181818;
 }
 
 /* HEADER */
 
 #chatHeader{
-  background:#075e54;
+  background:#000000;
   color:white;
   padding:12px;
   display:flex;
   align-items:center;
   gap:10px;
+  border-bottom:1px solid #333;
 }
 
 .avatar{
   width:40px;
   height:40px;
   border-radius:50%;
-  background:white;
+  background:#444;
 }
 
 .chat-info{
@@ -106,8 +110,10 @@ body{
 
 .status{
   font-size:12px;
-  opacity:0.8;
+  opacity:0.7;
 }
+
+/* MESSAGES */
 
 #messages{
   flex:1;
@@ -117,8 +123,9 @@ body{
   flex-direction:column;
   gap:10px;
   width:100%;
-  box-sizing:border-box;
 }
+
+/* MESSAGE BUBBLES */
 
 .msg{
   padding:10px 14px;
@@ -129,13 +136,14 @@ body{
 }
 
 .left{
-  background:white;
+  background:#2b2b2b;
   align-self:flex-start;
 }
 
 .right{
-  background:#dcf8c6;
+  background:#000000;
   align-self:flex-end;
+  border:1px solid #333;
 }
 
 /* INPUT AREA */
@@ -143,22 +151,28 @@ body{
 #chatForm{
   display:flex;
   padding:10px;
-  background:white;
+  background:#111;
   gap:10px;
-  border-top:1px solid #ddd;
+  border-top:1px solid #333;
 }
 
 #messageInput{
   flex:1;
   padding:10px;
   border-radius:20px;
-  border:1px solid #ccc;
+  border:1px solid #444;
+  background:#1e1e1e;
+  color:white;
 }
 
 #chatForm button{
-  background:#25d366;
+  background:#000000;
   border:none;
   color:white;
   padding:10px 16px;
   border-radius:20px;
+}
+
+#chatForm button:hover{
+  background:#333333;
 }
