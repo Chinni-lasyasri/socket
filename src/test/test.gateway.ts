@@ -34,8 +34,8 @@ export class ChatGateway implements OnGatewayConnection {
   @WebSocketServer()
   server: Server;
 
-  // allowedUsers = ['111', '222', '333', '444', '555'];
-  allowedUsers = ['test', 'test1', 'test2', 'test3', 'test4'];
+  allowedUsers = ['111', '222', '333', '444', '555'];
+  // allowedUsers = ['test', 'test1', 'test2', 'test3', 'test4'];
 
   roomMessages: Record<string, ChatMessage[]> = {};
 
@@ -56,20 +56,6 @@ export class ChatGateway implements OnGatewayConnection {
     await client.join(room);
 
     console.log(username, 'joined', room);
-
-    // const allMessages = this.roomMessages[room] || [];
-
-    // // send only messages not yet delivered to this user
-    // const pendingMessages = allMessages.filter(
-    //   (msg) => !msg.deliveredTo.includes(username),
-    // );
-
-    // client.emit('previous-messages', pendingMessages);
-
-    // // mark them as delivered
-    // pendingMessages.forEach((msg) => {
-    //   msg.deliveredTo.push(username);
-    // });
 
     const allMessages = this.roomMessages[room] || [];
 

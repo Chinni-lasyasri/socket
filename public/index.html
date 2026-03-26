@@ -1,282 +1,250 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<title>Websocket Testing</title>
+  <title>Websocket Testing</title>
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta name="theme-color" content="#000000">
+  <meta name="theme-color" content="#000000">
 
-<link rel="manifest" href="/manifest.json">
+  <link rel="manifest" href="/manifest.json">
 
-<link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css">
 
-<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
 
 </head>
 
 <body>
 
-<!-- <div id="loginPage">
+  <div id="loginPage">
 
-<h2>Login</h2>
+    <form id="loginForm">
 
-<form id="loginForm">
+      <h2>Login</h2>
 
-<input id="usernameInput" placeholder="Enter Username" required/>
-<button type="submit">Join</button>
-</form>
+      <input id="usernameInput" placeholder="Enter Username" required />
+      <button type="submit">Join</button>
+    </form>
 
-</div> -->
-
-<div id="loginPage">
-
-<form id="loginForm">
-<h2>Login</h2>
-
-<input id="usernameInput" placeholder="Enter Username" required/>
-<button type="submit">Join</button>
-</form>
-
-</div>
-
-<div id="chatPage">
-
-<div id="chatContainer">
-
-<div id="chatHeader">
-  <div class="avatar"></div>
-  <div class="chat-info">
-    <div id="roomHeader">Personal Chat</div>
-    <span class="status">Online</span>
   </div>
-</div>
 
-<div id="messages"></div>
+  <div id="chatPage">
 
-<form id="chatForm">
-<input id="messageInput" placeholder="Type a message..." required/>
-<button type="submit">Send</button>
-</form>
+    <div id="chatContainer">
 
-</div>
+      <div id="chatHeader">
+        <div class="avatar"></div>
+        <div class="chat-info">
+          <div id="roomHeader">Personal Chat</div>
+          <span class="status">Online</span>
+        </div>
+      </div>
 
-</div>
+      <div id="messages"></div>
 
-<script>
+      <form id="chatForm">
+        <input id="messageInput" placeholder="Type a message..." required />
+        <button type="submit">Send</button>
+      </form>
 
-let sessionMessages = [];
+    </div>
 
-const ROOM_NAME = "Personal Chat";
+  </div>
 
-const socket = io("https://chinni-test-chat.onrender.com", {
-  transports: ["websocket"],
-  reconnection: true
-});
+  <script>
 
-const loginPage = document.getElementById("loginPage");
-const chatPage = document.getElementById("chatPage");
+    let sessionMessages = [];
 
-const loginForm = document.getElementById("loginForm");
-const usernameInput = document.getElementById("usernameInput");
+    const ROOM_NAME = "Personal Chat";
 
-const chatForm = document.getElementById("chatForm");
-const messageInput = document.getElementById("messageInput");
-
-const messages = document.getElementById("messages");
-
-let username = "";
-
-// function addMessage(data){
-//   const div = document.createElement("div");
-//   div.classList.add("msg");
-
-//   if(data.username === username){
-//     div.classList.add("right");
-//   }else{
-//     div.classList.add("left");
-//   }
-
-//   div.innerHTML = `${data.message}`;
-
-//   messages.appendChild(div);
-
-//   messages.scrollTop = messages.scrollHeight;
-// }
-
-function addMessage(data, save = true){
-  const div = document.createElement("div");
-  div.classList.add("msg");
-
-  if(data.username === username){
-    div.classList.add("right");
-  }else{
-    div.classList.add("left");
-  }
-
-  div.innerHTML = `${data.message}`;
-
-  messages.appendChild(div);
-
-  messages.scrollTop = messages.scrollHeight;
-
-  if(save){
-    sessionMessages.push(data);
-  }
-}
-
-loginForm.addEventListener("submit",(e)=>{
-  e.preventDefault();
-
-  username = usernameInput.value;
-
-  const allowedUsers = ['test', 'test1', 'test2', 'test3', 'test4'];
-
-  if(!allowedUsers.includes(username)){
-    alert("User does not exist");
-    return;
-  }
-
-  loginPage.style.display="none";
-  chatPage.style.display="flex";
-
-  // Keep header after login
-  // messages.innerHTML = `<div id="roomHeader">${ROOM_NAME}</div>`;
-  // messages.innerHTML = "";
-  sessionMessages = [];
-  messages.innerHTML = "";
-  
-
-  socket.emit("join-room",{
-    room: ROOM_NAME,
-    username: username
-  });
-
-});
-
-// socket.on("previous-messages",(msgs)=>{
-//   msgs.forEach(addMessage);
-// });
-
-socket.on("previous-messages",(msgs)=>{
-
-  // Merge messages instead of replacing
-  msgs.forEach(msg => {
-    const exists = sessionMessages.find(
-      m => m.message === msg.message && m.username === msg.username
-    );
-
-    if(!exists){
-      // addMessage(msg);
-      addMessage(msg, true);
-    }
-  });
-
-});
-
-chatForm.addEventListener("submit",(e)=>{
-  e.preventDefault();
-
-  const message = messageInput.value.trim();
-  if(!message) return;
-
-  socket.emit("room-message",{
-    room: ROOM_NAME,
-    username: username,
-    message: message
-  });
-
-  messageInput.value="";
-});
-
-// socket.on("message",(data)=>{
-//   addMessage(data);
-// });
-
-socket.on("message",(data)=>{
-  addMessage(data);
-});
-
-socket.on("reconnect", () => {
-  console.log("Reconnected to server");
-
-  if(username){
-    socket.emit("join-room",{
-      room: ROOM_NAME,
-      username: username
+    const socket = io("https://chinni-test-chat.onrender.com", {
+      transports: ["websocket"],
+      reconnection: true
     });
-  }
-});
 
-</script>
+    const loginPage = document.getElementById("loginPage");
+    const chatPage = document.getElementById("chatPage");
 
-<script>
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/sw.js");
-}
-</script>
+    const loginForm = document.getElementById("loginForm");
+    const usernameInput = document.getElementById("usernameInput");
 
-<!-- Install Banner -->
-<div id="installBanner">
-  <div class="install-content">
-    <div class="install-text">
-      <strong>Install app for faster messaging</strong>
-    </div>
+    const chatForm = document.getElementById("chatForm");
+    const messageInput = document.getElementById("messageInput");
 
-    <div class="install-actions">
-      <button id="installAppBtn">Install</button>
-      <button id="closeBanner">✕</button>
+    const messages = document.getElementById("messages");
+
+    let username = "";
+
+
+    function addMessage(data, save = true) {
+      const div = document.createElement("div");
+      div.classList.add("msg");
+
+      if (data.username === username) {
+        div.classList.add("right");
+      } else {
+        div.classList.add("left");
+      }
+
+      div.innerHTML = `${data.message}`;
+
+      messages.appendChild(div);
+
+      messages.scrollTop = messages.scrollHeight;
+
+      if (save) {
+        sessionMessages.push(data);
+      }
+    }
+
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      username = usernameInput.value;
+
+      const allowedUsers = ['111', '222', '333', '444', '555'];
+      // const allowedUsers = ['test', 'test1', 'test2', 'test3', 'test4'];
+
+      if (!allowedUsers.includes(username)) {
+        alert("User does not exist");
+        return;
+      }
+
+      loginPage.style.display = "none";
+      chatPage.style.display = "flex";
+
+      sessionMessages = [];
+      messages.innerHTML = "";
+
+
+      socket.emit("join-room", {
+        room: ROOM_NAME,
+        username: username
+      });
+
+    });
+
+    socket.on("previous-messages", (msgs) => {
+
+      // Merge messages instead of replacing
+      msgs.forEach(msg => {
+        const exists = sessionMessages.find(
+          m => m.message === msg.message && m.username === msg.username
+        );
+
+        if (!exists) {
+          addMessage(msg, true);
+        }
+      });
+
+    });
+
+    chatForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const message = messageInput.value.trim();
+      if (!message) return;
+
+      socket.emit("room-message", {
+        room: ROOM_NAME,
+        username: username,
+        message: message
+      });
+
+      messageInput.value = "";
+    });
+
+    socket.on("message", (data) => {
+      addMessage(data);
+    });
+
+    socket.on("reconnect", () => {
+      console.log("Reconnected to server");
+
+      if (username) {
+        socket.emit("join-room", {
+          room: ROOM_NAME,
+          username: username
+        });
+      }
+    });
+
+  </script>
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js");
+    }
+  </script>
+
+  <!-- Install Banner -->
+  <div id="installBanner">
+    <div class="install-content">
+      <div class="install-text">
+        <strong>Install app for faster messaging</strong>
+      </div>
+
+      <div class="install-actions">
+        <button id="installAppBtn">Install</button>
+        <button id="closeBanner">✕</button>
+      </div>
     </div>
   </div>
-</div>
 
-<script>
-let deferredPrompt;
-const banner = document.getElementById("installBanner");
-const installBtn = document.getElementById("installAppBtn");
-const closeBtn = document.getElementById("closeBanner");
+  <script>
+    let deferredPrompt;
+    const banner = document.getElementById("installBanner");
+    const installBtn = document.getElementById("installAppBtn");
+    const closeBtn = document.getElementById("closeBanner");
 
-const isIOS = /iphone|ipad|ipod/i.test(window.navigator.userAgent);
+    const isIOS = /iphone|ipad|ipod/i.test(window.navigator.userAgent);
 
-// If already installed
-if (window.matchMedia('(display-mode: standalone)').matches) {
-  banner.style.display = "none";
-}
+    console.log('userAgentisIOS', window.navigator.userAgent);
 
-// iPhone behavior
-if (isIOS) {
-  banner.style.display = "block";
-  installBtn.style.display = "none";
-  document.querySelector(".install-text strong").innerText =
-    "Tap Share → Add to Home Screen";
-} 
-// Android / Desktop
-else {
-  window.addEventListener("beforeinstallprompt", (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    banner.style.display = "block";
-  });
-}
+    console.log('isIOS', isIOS);
 
-installBtn.addEventListener("click", async () => {
-  if (!deferredPrompt) return;
+    // If already installed
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      banner.style.display = "none";
+    }
 
-  deferredPrompt.prompt();
-  await deferredPrompt.userChoice;
+    // iPhone behavior
+    if (isIOS) {
+      banner.style.display = "block";
+      installBtn.style.display = "none";
+      document.querySelector(".install-text strong").innerText =
+        "Tap Share → Add to Home Screen";
+    }
+    // Android / Desktop
+    else {
+      window.addEventListener("beforeinstallprompt", (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        banner.style.display = "block";
+      });
+    }
 
-  banner.style.display = "none";
-  deferredPrompt = null;
-});
+    installBtn.addEventListener("click", async () => {
+      if (!deferredPrompt) return;
 
-closeBtn.addEventListener("click", () => {
-  banner.style.display = "none";
-});
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
 
-window.addEventListener("appinstalled", () => {
-  banner.style.display = "none";
-});
-</script>
+      banner.style.display = "none";
+      deferredPrompt = null;
+    });
+
+    closeBtn.addEventListener("click", () => {
+      banner.style.display = "none";
+    });
+
+    window.addEventListener("appinstalled", () => {
+      banner.style.display = "none";
+    });
+  </script>
 
 </body>
+
 </html>
