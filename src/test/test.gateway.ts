@@ -35,7 +35,7 @@ export class ChatGateway implements OnGatewayConnection {
   server: Server;
 
   // allowedUsers = ['111', '222', '333', '444', '555'];
-  allowedUsers = ['1001', '2002', '3003'];
+  allowedUsers = ['test', 'test1', 'test2', 'test3', 'test4'];
 
   roomMessages: Record<string, ChatMessage[]> = {};
 
