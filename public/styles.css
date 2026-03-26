@@ -37,12 +37,19 @@ body{
   font-weight:bold;
 } */
 
-#loginPage{
+/* #loginPage{
   height:100dvh;
   display:flex;
   align-items:center;
   justify-content:center;
   background:#075e54;
+} */
+
+#loginPage{
+  height:100dvh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
 #loginPage form{
